@@ -1,14 +1,19 @@
-import {Animated, View} from 'react-native';
+import {Animated, Image, View} from 'react-native';
 import CdIcon from '../../../public/images/cdIcon';
 import styles from './DiskPlayer.styles';
-import {useEffect, useRef} from 'react';
+import {useContext, useEffect, useRef} from 'react';
+import {MusicContext} from '../../Context/musicContext';
 
-function DiskPlayer({isPlaying}) {
+function DiskPlayer() {
   const rotateValue = useRef(new Animated.Value(0)).current;
   const rotateInterpolation = rotateValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
+  const [musicState] = useContext(MusicContext);
+  const isPlaying = musicState?.isPlaying;
+  const imgUrl = musicState?.selectedMusic?.cover;
+  const defaultUrl = require('../../../public/images/background.jpg');
 
   useEffect(() => {
     if (isPlaying) {
@@ -17,6 +22,7 @@ function DiskPlayer({isPlaying}) {
       stopRotation();
     }
   }, [isPlaying]);
+
   const startRotation = () => {
     Animated.loop(
       Animated.timing(rotateValue, {
@@ -40,7 +46,12 @@ function DiskPlayer({isPlaying}) {
       <Animated.View style={animatedStyle}>
         <CdIcon />
       </Animated.View>
-      <View style={styles.musicImg}></View>
+      <View style={styles.musicImg}>
+        <Image
+          source={imgUrl ? {uri: imgUrl} : defaultUrl}
+          style={styles.cover}
+        />
+      </View>
     </View>
   );
 }

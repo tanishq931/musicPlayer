@@ -1,12 +1,29 @@
-import HomeScreen from './Screens/Home/HomeScreen';
 import {StatusBar} from 'react-native';
 import Colors from './Theme/Colors';
+import {MusicProvider} from './Context/musicContext';
+import TrackPlayer from 'react-native-track-player';
+import {useEffect} from 'react';
+import 'react-native-gesture-handler';
+import Navigation from './Navigation.js/Navigation';
+import HomeContainer from './Containers/HomeContainer/HomeContainer';
+import HomeScreen from './Screens/Home/HomeScreen';
 
 function App() {
+  useEffect(() => {
+    const setupPlayer = async () => {
+      await TrackPlayer.setupPlayer();
+    };
+    setupPlayer();
+    return () => {
+      TrackPlayer.reset();
+    };
+  }, []);
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.BACKGROUND} />
-      <HomeScreen />
+      <StatusBar barStyle="light-content" backgroundColor={Colors.BLACK} />
+      <MusicProvider>
+        <Navigation />
+      </MusicProvider>
     </>
   );
 }

@@ -2,43 +2,37 @@ import {StyleSheet} from 'react-native';
 import Colors from '../../Theme/Colors';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 10,
-    backgroundColor: Colors.BLACK,
-    paddingTop: 20,
+  title: {
+    fontFamily: 'Poppins-ExtraBold',
   },
-  topContainer: {
-    flex: 1,
-    backgroundColor: Colors.BACKGROUND,
-    paddingTop:10,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  descContainer: {
+  tabBar: {
+    flexDirection: 'row',
+    height: 60,
     marginTop: 20,
   },
-  title: {
-    fontSize: 18,
-    color: Colors.BLACK,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  writers: {
-    fontSize: 12,
-    fontWeight: 'light',
-    color: Colors.BLACK,
-    textAlign: 'center',
-  },
-  likeRow: {
-    padding: 10,
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  listContainer: {
+  tab: active => ({
     flex: 1,
-    backgroundColor: Colors.WHITE,
+    borderBottomWidth: 2,
+    borderBottomColor: active ? Colors.WHITE : Colors.GREY,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor:active?'#fdc5f5':'transparent'
+    backgroundColor: active ? '#d90429' : 'transparent',
+  }),
+  tabTitle: {
+    color: Colors.WHITE,
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: 14,
+    color: Colors.WHITE,
+    fontFamily: 'Poppins-Light',
   },
 });
 
