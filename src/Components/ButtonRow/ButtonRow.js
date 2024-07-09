@@ -61,28 +61,57 @@ function ButtonRow() {
     musicDispatch(setFavourites(list));
     await StorageService.setData(FAVOURITES_LIST, list);
   };
+  const setShuffle = () => {
+    musicDispatch(toggleShuffle(!musicState?.shuffle));
+  };
+
+  const buttons = [
+    {
+      icon: (
+        <HeartIcon
+          color={favIndex !== -1 ? Colors.RED : Colors.BLACK}
+          fill={favIndex !== -1 ? Colors.RED : 'none'}
+        />
+      ),
+      onPress: toggleFavourites,
+    },
+    {
+      icon: (
+        <AutoPlayIcon
+          color={musicState?.autoPlay ? Colors.WHITE : Colors.BLACK}
+        />
+      ),
+      onPress: toggleAutoPlay,
+    },
+    {
+      icon: (
+        <ShuffleIcon
+          color={musicState?.shuffle ? Colors.WHITE : Colors.BLACK}
+        />
+      ),
+      onPress: setShuffle,
+    },
+    {
+      icon: <ShareIcon />,
+      onPress: onShare,
+    },
+  ];
 
   return (
     <View style={styles.likeRow}>
-      <ButtonBox
-        icon={
-          <HeartIcon
-            color={favIndex !== -1 ? Colors.RED : Colors.BLACK}
-            fill={favIndex !== -1 ? Colors.RED : 'none'}
+      {buttons.map((item, index) => {
+        return (
+          <ButtonBox
+            icon={item?.icon}
+            onPress={item?.onPress}
+            style={
+              ((index === 1 && musicState?.autoPlay) ||
+                (index === 2 && musicState?.shuffle)) &&
+              styles.transparentBox
+            }
           />
-        }
-        onPress={toggleFavourites}
-      />
-      <ButtonBox
-        icon={
-          <AutoPlayIcon
-            color={musicState?.autoPlay ? Colors.WHITE : Colors.BLACK}
-          />
-        }
-        onPress={toggleAutoPlay}
-        style={musicState?.autoPlay && styles.transparentBox}
-      />
-      <ButtonBox icon={<ShareIcon />} onPress={onShare} />
+        );
+      })}
     </View>
   );
 }

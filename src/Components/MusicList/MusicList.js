@@ -7,15 +7,12 @@ import PlayIcon from '../../../public/images/playIcon';
 import styles from './MusicList.styles';
 import Colors from '../../Theme/Colors';
 
-function MusicList({musicList, onPressPlay, onPressIcon, skipIndex}) {
+function MusicList({musicList, onPressPlay, onPressIcon, musicIndex}) {
   const [musicState] = useContext(MusicContext);
   const renderItem = ({item, index}) => {
-    // if (skipIndex >= 0 && index === skipIndex) {
-    //   return;
-    // }
     return (
       <MusicRow
-        key={index}
+        key={item?.title}
         title={item?.title}
         icon={
           musicState?.selectedMusic?.title == item.title &&
@@ -29,7 +26,8 @@ function MusicList({musicList, onPressPlay, onPressIcon, skipIndex}) {
           onPressPlay(item, index);
         }}
         customStyle={
-          musicState?.selectedMusic?.title == item.title && styles.selectedMusic
+          musicState?.selectedMusic?.title == item?.title &&
+          styles.selectedMusic
         }
         onPressIcon={() => {
           onPressIcon(item, index);
@@ -37,35 +35,31 @@ function MusicList({musicList, onPressPlay, onPressIcon, skipIndex}) {
       />
     );
   };
-  // console.log(skipIndex);
+  const ref = useRef(null);
+  useEffect(() => {
+    console.log(musicState?.selectedIndex);
+    if (ref.current && musicList.length > 0 && musicState?.selectedIndex >= 0) {
+      ref.current.scrollToIndex({
+        index: musicState?.selectedIndex,
+        animated: true,
+      });
+    }
+  }, [musicState?.selectedIndex]);
+  const getItemLayout = (data, index) => ({
+    length: 40,
+    offset: 40 * index,
+    index,
+  });
   return (
     <>
-      {/* {skipIndex >= 0 && (
-        <MusicRow
-          title={musicList[skipIndex]?.title}
-          key={skipIndex}
-          icon={
-            musicState?.isPlaying ? (
-              <PauseIcon color={Colors.WHITE} />
-            ) : (
-              <PlayIcon color={Colors.WHITE} />
-            )
-          }
-          onPress={() => {
-            onPressPlay(musicList[skipIndex], skipIndex);
-          }}
-          customStyle={styles.selectedMusic}
-          onPressIcon={() => {
-            onPressIcon(musicList[skipIndex], skipIndex);
-          }}
-        />
-         )} */}
       <FlatList
+        ref={ref}
         data={musicList}
         renderItem={renderItem}
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         bounces={false}
-        keyExtractor={({item}) => item?.title}
+        keyExtractor={item => item?.title}
+        getItemLayout={getItemLayout}
       />
     </>
   );

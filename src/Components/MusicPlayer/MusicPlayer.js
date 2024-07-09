@@ -12,10 +12,8 @@ import {useTrackPlayer} from '../../Hooks/useTrackPlayer';
 import Slider from '@react-native-community/slider';
 import Colors from '../../Theme/Colors';
 import ButtonRow from '../ButtonRow/ButtonRow';
-import HeartIcon from '../../../public/images/heartIcon';
-import {navigationRef} from '../../Navigation.js/Navigation';
 
-function Player() {
+function Player({playNext, playPrevious}) {
   const [musicState, musicDispatch] = useContext(MusicContext);
   const [sliderValue, setSliderValue] = useState(0);
   const {player, useProgress} = useTrackPlayer();
@@ -99,13 +97,13 @@ function Player() {
             </View>
           </View>
           <View style={styles.trackPlayer}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={playPrevious}>
               <PlayPreviousIcon />
             </TouchableOpacity>
             <TouchableOpacity onPress={handlePress}>
               {musicState?.isPlaying ? <PauseIcon /> : <PlayIcon />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={playNext}>
               <PlayNextIcon />
             </TouchableOpacity>
           </View>

@@ -61,6 +61,8 @@ function HomeScreen() {
       !musicState?.isPlaying
     ) {
       onPressIcon(val, index);
+    } else if (index !== musicState?.selectedIndex) {
+      await musicDispatch(setSelectedIndex(index));
     }
     navigationRef.navigate('SONG_PLAYER', {musicList});
   };

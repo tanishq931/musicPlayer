@@ -4,6 +4,7 @@ const initialState = {
   autoPlay: true,
   favouritesList: [],
   musicList: [],
+  shuffle: false,
 };
 
 const reducers = (state, action) => {

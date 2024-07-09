@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import Player from '../../Components/MusicPlayer/MusicPlayer';
 import MusicList from '../../Components/MusicList/MusicList';
 import HomeContainer from '../../Containers/HomeContainer/HomeContainer';
@@ -11,14 +11,18 @@ import {
   setIsPlaying,
   setSelectedIndex,
   setSelectedMusic,
+  toggleShuffle,
 } from '../../Context/reducers';
 import {Event} from 'react-native-track-player';
+import {removeElement, useShuffle} from '../../Hooks/useShuffle';
 
 function SongPlayer() {
   const routes = useRoute();
   const musicList = routes?.params?.musicList;
   const {player, addSong} = useTrackPlayer();
   const [musicState, musicDispatch] = useContext(MusicContext);
+  const [shuffleList, setShuffleList] = useState(musicList);
+  const [musicIndex, setMusicIndex] = useState(musicState?.selectedIndex);
 
   const onPressIcon = (val, index) => {
     if (musicState?.selectedMusic?.title === val.title) {
@@ -29,36 +33,28 @@ function SongPlayer() {
       }
     } else {
       musicDispatch(setIsPlaying(true));
-      addSong(val);
-      musicDispatch(setSelectedIndex(index));
-      musicDispatch(setSelectedMusic(val));
+      playSong(index);
     }
   };
+  useEffect(() => {
+    checkList();
+    return () => {
+      musicDispatch(toggleShuffle(false));
+    };
+  }, [musicList.length]);
 
-  // useEffect(() => {
-  //   checkList();
-  // }, [musicList.length]);
-
-  // async function checkList() {
-  //   await player.pause();
-  //   await player.remove(0);
-  //   if (musicList.length === 0) {
-  //     navigationRef.navigate('HOME_SCREEN');
-  //   }
-  // }
-  const musicIndex = musicState?.selectedIndex;
+  async function checkList() {
+    if (musicList?.length == 0) {
+      await musicDispatch(setIsPlaying(false));
+      navigationRef.navigate('HOME_SCREEN');
+    }
+  }
   useEffect(() => {
     const queueEndedSubscription = player.addEventListener(
       Event.PlaybackQueueEnded,
       async data => {
         if (musicState?.autoPlay) {
-          // let nextIndex =
-          //   musicIndex === musicList?.length - 1 ? 0 : musicIndex + 1;
-          // const val = musicList[nextIndex];
-          // addSong(val);
-          // musicDispatch(setSelectedMusic(musicList[nextIndex]));
-          // musicDispatch(setSelectedIndex(nextIndex));
-          playNextSong();
+          playNextSong(musicIndex);
         } else {
           player.seekTo(0);
           musicDispatch(setIsPlaying(false));
@@ -78,14 +74,36 @@ function SongPlayer() {
     }
   }
 
-  const playNextSong = async () => {
+  const playNextSong = musicIndex => {
     let nextIndex = musicIndex === musicList?.length - 1 ? 0 : musicIndex + 1;
-    const val = musicList[nextIndex];
-    await addSong(val);
-    await musicDispatch(setSelectedMusic(musicList[nextIndex]));
-    await musicDispatch(setSelectedIndex(nextIndex));
+    playSong(nextIndex);
   };
 
+  const playPrevSong = () => {
+    let prevIndex = musicIndex === 0 ? musicList.length - 1 : musicIndex - 1;
+    playSong(prevIndex);
+  };
+
+  const playSong = async index => {
+    const val = shuffleList[index];
+    await addSong(val);
+    await musicDispatch(setSelectedMusic(val));
+    await musicDispatch(setSelectedIndex(index));
+    setMusicIndex(index);
+  };
+  useEffect(() => {
+    shuffleSongs();
+  }, [musicState?.shuffle]);
+
+  async function shuffleSongs() {
+    if (musicState?.shuffle) {
+      const arrToShuffle = removeElement(shuffleList, musicIndex);
+      const shuffledArr = useShuffle(arrToShuffle);
+      setShuffleList([musicState?.selectedMusic, ...shuffledArr]);
+      setMusicIndex(0);
+      await musicDispatch(setSelectedIndex(0));
+    }
+  }
   return (
     <HomeContainer>
       <AppBar
@@ -93,12 +111,18 @@ function SongPlayer() {
           navigationRef.goBack();
         }}
       />
-      {musicList?.length > 0 && <Player />}
+      {musicList?.length > 0 && (
+        <Player
+          playNext={() => {
+            playNextSong(musicIndex);
+          }}
+          playPrevious={playPrevSong}
+        />
+      )}
       <MusicList
-        musicList={musicList}
+        musicList={shuffleList}
         onPressIcon={onPressIcon}
         onPressPlay={onPressIcon}
-        Son
       />
     </HomeContainer>
   );
