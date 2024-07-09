@@ -16,6 +16,7 @@ import {navigationRef} from '../../Navigation.js/Navigation';
 import {getLocalSongs} from '../../Hooks/getLocalSongs';
 import StorageService from '../../Service/StorageService';
 import {FAVOURITES_LIST} from '../../Constants/constants';
+import SearchIcon from '../../../public/images/SearchIcon';
 
 function HomeScreen() {
   const [musicState, musicDispatch] = useContext(MusicContext);
@@ -83,7 +84,14 @@ function HomeScreen() {
 
   return (
     <HomeContainer>
-      <AppBar title="Sangeet Yantra" titleStyle={styles.title} />
+      <AppBar
+        title="Sangeet Yantra"
+        titleStyle={styles.title}
+        secondIcon={<SearchIcon />}
+        onPressSecondIcon={() => {
+          navigationRef.navigate('SEARCH');
+        }}
+      />
       <View style={styles.tabBar}>
         {tabs.map((val, index) => {
           return (

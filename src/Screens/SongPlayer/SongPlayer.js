@@ -15,6 +15,8 @@ import {
 } from '../../Context/reducers';
 import {Event} from 'react-native-track-player';
 import {removeElement, useShuffle} from '../../Hooks/useShuffle';
+import BackIcon from '../../../public/images/BackIcon';
+import Colors from '../../Theme/Colors';
 
 function SongPlayer() {
   const routes = useRoute();
@@ -110,6 +112,7 @@ function SongPlayer() {
         onPress={() => {
           navigationRef.goBack();
         }}
+        icon={<BackIcon color={Colors.WHITE} />}
       />
       {musicList?.length > 0 && (
         <Player

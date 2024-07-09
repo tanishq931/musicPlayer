@@ -1,4 +1,4 @@
-import {FlatList, ScrollView} from 'react-native';
+import {FlatList} from 'react-native';
 import MusicRow from '../MusicRow/MusicRow';
 import {useContext, useEffect, useRef} from 'react';
 import {MusicContext} from '../../Context/musicContext';
@@ -7,7 +7,7 @@ import PlayIcon from '../../../public/images/playIcon';
 import styles from './MusicList.styles';
 import Colors from '../../Theme/Colors';
 
-function MusicList({musicList, onPressPlay, onPressIcon, musicIndex}) {
+function MusicList({musicList, onPressPlay, onPressIcon}) {
   const [musicState] = useContext(MusicContext);
   const renderItem = ({item, index}) => {
     return (
@@ -37,7 +37,6 @@ function MusicList({musicList, onPressPlay, onPressIcon, musicIndex}) {
   };
   const ref = useRef(null);
   useEffect(() => {
-    console.log(musicState?.selectedIndex);
     if (ref.current && musicList.length > 0 && musicState?.selectedIndex >= 0) {
       ref.current.scrollToIndex({
         index: musicState?.selectedIndex,

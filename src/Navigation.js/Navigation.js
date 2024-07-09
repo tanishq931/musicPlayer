@@ -4,9 +4,8 @@ import {
 } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from '../Screens/Home/HomeScreen';
-import FavouritesList from '../Screens/Favourites/FavouritesList';
-import {View} from 'react-native';
 import SongPlayer from '../Screens/SongPlayer/SongPlayer';
+import Search from '../Screens/Search/Search';
 
 const Stack = createStackNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -21,8 +20,8 @@ function Navigation() {
           animationEnabled: false,
         }}>
         <Stack.Screen name="HOME_SCREEN" component={HomeScreen} />
-        {/* <Stack.Screen name="FAVOURITES_LIST" component={FavouritesList} /> */}
         <Stack.Screen name="SONG_PLAYER" component={SongPlayer} />
+        <Stack.Screen name="SEARCH" component={Search} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,22 +3,17 @@ import Colors from '../../Theme/Colors';
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 5,
-    gap: 10,
-  },
-  iconButton: {
-    width: 40,
-  },
-  titleContainer: {
     flex: 1,
+  },
+  noResult: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 18,
+  noResText: {
     color: Colors.WHITE,
+    fontSize: 16,
+    fontFamily: 'Poppins-Light',
   },
 });
 

@@ -5,8 +5,6 @@ import TrackPlayer from 'react-native-track-player';
 import {useEffect} from 'react';
 import 'react-native-gesture-handler';
 import Navigation from './Navigation.js/Navigation';
-import HomeContainer from './Containers/HomeContainer/HomeContainer';
-import HomeScreen from './Screens/Home/HomeScreen';
 
 function App() {
   useEffect(() => {
