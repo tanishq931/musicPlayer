@@ -13,10 +13,11 @@ import {
   setSelectedMusic,
   toggleShuffle,
 } from '../../Context/reducers';
-import {Event} from 'react-native-track-player';
+import {Capability, Event} from 'react-native-track-player';
 import {removeElement, useShuffle} from '../../Hooks/useShuffle';
 import BackIcon from '../../../public/images/BackIcon';
 import Colors from '../../Theme/Colors';
+import {addListToPlayer} from '../../Hooks/addListToPlayer';
 
 function SongPlayer() {
   const routes = useRoute();
@@ -51,30 +52,6 @@ function SongPlayer() {
       navigationRef.navigate('HOME_SCREEN');
     }
   }
-  useEffect(() => {
-    const queueEndedSubscription = player.addEventListener(
-      Event.PlaybackQueueEnded,
-      async data => {
-        if (musicState?.autoPlay) {
-          playNextSong(musicIndex);
-        } else {
-          player.seekTo(0);
-          musicDispatch(setIsPlaying(false));
-        }
-      },
-    );
-    return () => {
-      queueEndedSubscription.remove();
-    };
-  }, [musicState]);
-
-  if (musicState?.selectedMusic) {
-    if (musicState?.isPlaying) {
-      player.play();
-    } else {
-      player.pause();
-    }
-  }
 
   const playNextSong = musicIndex => {
     let nextIndex = musicIndex === musicList?.length - 1 ? 0 : musicIndex + 1;
@@ -87,9 +64,8 @@ function SongPlayer() {
   };
 
   const playSong = async index => {
-    const val = shuffleList[index];
-    await addSong(val);
-    await musicDispatch(setSelectedMusic(val));
+    player.skip(index);
+    await musicDispatch(setSelectedMusic(shuffleList[index]));
     await musicDispatch(setSelectedIndex(index));
     setMusicIndex(index);
   };
@@ -99,13 +75,16 @@ function SongPlayer() {
 
   async function shuffleSongs() {
     if (musicState?.shuffle) {
-      const arrToShuffle = removeElement(shuffleList, musicIndex);
-      const shuffledArr = useShuffle(arrToShuffle);
-      setShuffleList([musicState?.selectedMusic, ...shuffledArr]);
+      await player.pause();
+      const shuffledArr = useShuffle(shuffleList);
+      setShuffleList(shuffledArr);
+      addListToPlayer(shuffledArr);
       setMusicIndex(0);
       await musicDispatch(setSelectedIndex(0));
+      player.play();
     }
   }
+
   return (
     <HomeContainer>
       <AppBar
